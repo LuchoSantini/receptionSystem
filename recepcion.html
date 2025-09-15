@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Acceso - Recepción</title>
+    <style>
+      :root {
+        --bg: #f6f7fb;
+        --card: #fff;
+        --accent: #2b6cb0;
+        --muted: #6b7280;
+      }
+      body {
+        font-family: Inter, system-ui, Segoe UI, Arial;
+        margin: 0;
+        background: var(--bg);
+        color: #111;
+      }
+      header {
+        background: linear-gradient(90deg, #eef2ff, #f0f9ff);
+        padding: 18px 20px;
+        border-bottom: 1px solid #e6eef8;
+      }
+      .wrap {
+        max-width: 920px;
+        margin: 26px auto;
+        padding: 0 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      .card {
+        background: var(--card);
+        padding: 18px;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(21, 29, 39, 0.06);
+      }
+      button {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: #e6eef8;
+        color: var(--accent);
+      }
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid #f0f4fb;
+        border-radius: 8px;
+        margin-bottom: 8px;
+      }
+      .meta {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .ok {
+        color: green;
+      }
+      .err {
+        color: #b91c1c;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>Acceso por QR — Recepción</h1>
+        <p class="small">
+          Lista actualizada automáticamente. Presiona "Aprobar" para autorizar
+          entrada.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="card">
+        <div
+          style="
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+          "
+        >
+          <button id="btn-refresh" class="secondary">Refrescar</button>
+          <label class="small"
+            >Polling: <span id="poll-interval">5s</span></label
+          >
+        </div>
+        <div id="pending-list">
+          <p class="small">Cargando...</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="recepcion.js"></script>
+  </body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Acceso - Empleado / Recepción</title>
+    <style>
+      :root {
+        --bg: #f6f7fb;
+        --card: #fff;
+        --accent: #2b6cb0;
+        --muted: #6b7280;
+      }
+      body {
+        font-family: Inter, system-ui, Segoe UI, Arial;
+        margin: 0;
+        background: var(--bg);
+        color: #111;
+      }
+      header {
+        background: linear-gradient(90deg, #eef2ff, #f0f9ff);
+        padding: 18px 20px;
+        border-bottom: 1px solid #e6eef8;
+      }
+      .wrap {
+        max-width: 920px;
+        margin: 26px auto;
+        padding: 0 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      .card {
+        background: var(--card);
+        padding: 18px;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px rgba(21, 29, 39, 0.06);
+      }
+      label {
+        display: block;
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e3e8f0;
+        border-radius: 8px;
+        font-size: 16px;
+      }
+      button {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      button.secondary {
+        background: #e6eef8;
+        color: var(--accent);
+        font-weight: 600;
+      }
+      .small {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #f0f4fb;
+        margin-bottom: 8px;
+      }
+      .meta {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .ok {
+        color: green;
+      }
+      .err {
+        color: #b91c1c;
+      }
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .tabs a {
+        padding: 8px 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        color: var(--accent);
+        background: transparent;
+        border: 1px solid transparent;
+      }
+      .tabs a.active {
+        background: var(--accent);
+        color: white;
+      }
+      @media (max-width: 800px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap">
+        <h1>Acceso por QR — Empleado / Recepción</h1>
+        <p class="small">
+          Escanea el QR para abrir la vista de empleado. La vista de recepción
+          muestra las solicitudes pendientes.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="tabs">
+        <a href="#empleado" id="tab-empleado" class="active">Empleado (QR)</a>
+        <a href="#recepcion" id="tab-recepcion">Recepción</a>
+      </div>
+
+      <div class="grid">
+        <!-- Empleado -->
+        <section id="empleado" class="card">
+          <h2>Empleado — Ingresar DNI</h2>
+          <p class="small">Introduce tu DNI y presiona "Pedir acceso".</p>
+
+          <div style="margin-top: 12px">
+            <label for="dni">DNI</label>
+            <input
+              id="dni"
+              type="text"
+              inputmode="numeric"
+              placeholder="12345678"
+            />
+          </div>
+
+          <div
+            style="
+              margin-top: 12px;
+              display: flex;
+              gap: 8px;
+              align-items: center;
+            "
+          >
+            <button id="btn-request">Pedir acceso</button>
+            <button id="btn-clear" class="secondary">Limpiar</button>
+          </div>
+
+          <div id="empleado-msg" style="margin-top: 12px"></div>
+
+          <hr style="margin: 18px 0" />
+
+          <div class="small">
+            <strong>Cómo usar:</strong>
+            <ul>
+              <li>
+                Pegar un QR en la puerta que apunte a esta página (o a la ruta
+                /empleado en tu web).
+              </li>
+              <li>
+                El backend espera un POST a <code>/api/Access</code> con el DNI.
+              </li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Recepcion -->
+        <section id="recepcion" class="card">
+          <h2>Recepción — Solicitudes pendientes</h2>
+          <p class="small">
+            Lista actualizada automáticamente cada 2 segundos. Presiona
+            "Aprobar" para autorizar entrada.
+          </p>
+
+          <div
+            style="
+              display: flex;
+              gap: 8px;
+              align-items: center;
+              margin-top: 12px;
+            "
+          >
+            <button id="btn-refresh" class="secondary">Refrescar</button>
+            <label class="small" style="margin-left: 6px"
+              >Polling: <span id="poll-interval">2s</span></label
+            >
+          </div>
+
+          <div id="pending-list" style="margin-top: 12px">
+            <p class="small">Cargando...</p>
+          </div>
+
+          <div style="margin-top: 8px" class="small">
+            <strong>Nota:</strong> protege esta página con usuario/contraseña en
+            producción.
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      (() => {
+        // Cambia la base si tu API está en otro host
+        const API_BASE = "https://localhost:7030"; // por defecto mismo host: /api/Access
+        const REQ_ENDPOINT = API_BASE + "/api/Access";
+        const PENDING_ENDPOINT = REQ_ENDPOINT + "/pending";
+        const APPROVE_ENDPOINT = (id) => REQ_ENDPOINT + "/approve/" + id;
+
+        // UI refs empleado
+        const dniInput = document.getElementById("dni");
+        const btnRequest = document.getElementById("btn-request");
+        const btnClear = document.getElementById("btn-clear");
+        const empleadoMsg = document.getElementById("empleado-msg");
+
+        // UI refs recepcion
+        const pendingListEl = document.getElementById("pending-list");
+        const btnRefresh = document.getElementById("btn-refresh");
+
+        // Tabs
+        const tabEmpleado = document.getElementById("tab-empleado");
+        const tabRecepcion = document.getElementById("tab-recepcion");
+        const sectionEmpleado = document.getElementById("empleado");
+        const sectionRecepcion = document.getElementById("recepcion");
+
+        function showTab(tab) {
+          if (tab === "empleado") {
+            tabEmpleado.classList.add("active");
+            tabRecepcion.classList.remove("active");
+            sectionEmpleado.style.display = "";
+            sectionRecepcion.style.display = "none";
+          } else {
+            tabRecepcion.classList.add("active");
+            tabEmpleado.classList.remove("active");
+            sectionRecepcion.style.display = "";
+            sectionEmpleado.style.display = "none";
+          }
+        }
+
+        tabEmpleado.addEventListener("click", (e) => {
+          e.preventDefault();
+          showTab("empleado");
+        });
+        tabRecepcion.addEventListener("click", (e) => {
+          e.preventDefault();
+          showTab("recepcion");
+        });
+
+        // Default show empleado
+        showTab("empleado");
+
+        // Helper: show messages
+        function showMessage(targetEl, text, ok = true) {
+          targetEl.innerHTML =
+            '<div class="' + (ok ? "ok" : "err") + '">' + text + "</div>";
+          setTimeout(() => {
+            if (targetEl.innerHTML) targetEl.innerHTML = "";
+          }, 5000);
+        }
+
+        // Empleado: pedir acceso
+        btnRequest.addEventListener("click", async () => {
+          const dni = (dniInput.value || "").trim();
+          if (!dni) {
+            showMessage(empleadoMsg, "Ingresá tu DNI", false);
+            return;
+          }
+
+          btnRequest.disabled = true;
+          btnRequest.textContent = "Enviando...";
+
+          try {
+            // El controlador espera un JSON string (FromBody string). Enviamos JSON.stringify(dni).
+            const res = await fetch(REQ_ENDPOINT, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(dni),
+            });
+
+            if (!res.ok) {
+              const text = await res.text();
+              showMessage(
+                empleadoMsg,
+                "Error: " + (text || res.statusText),
+                false
+              );
+            } else {
+              const data = await res.json();
+              showMessage(
+                empleadoMsg,
+                "Solicitud enviada: " + (data?.empleado ?? "OK")
+              );
+              dniInput.value = "";
+            }
+          } catch (err) {
+            showMessage(
+              empleadoMsg,
+              "Error de conexión: " + err.message,
+              false
+            );
+          } finally {
+            btnRequest.disabled = false;
+            btnRequest.textContent = "Pedir acceso";
+          }
+        });
+
+        btnClear.addEventListener("click", () => {
+          dniInput.value = "";
+        });
+
+        // Recepción: polling de pendientes
+        let pollIntervalSec = 2;
+        document.getElementById("poll-interval").textContent =
+          pollIntervalSec + "s";
+        let pollTimer = null;
+
+        async function loadPending() {
+          pendingListEl.innerHTML = '<p class="small">Cargando...</p>';
+          try {
+            const res = await fetch(PENDING_ENDPOINT, { method: "GET" });
+            if (!res.ok) {
+              pendingListEl.innerHTML =
+                '<div class="err">Error al cargar pendientes: ' +
+                res.statusText +
+                "</div>";
+              return;
+            }
+            const items = await res.json();
+            renderPending(items);
+          } catch (err) {
+            pendingListEl.innerHTML =
+              '<div class="err">Error de conexión: ' + err.message + "</div>";
+          }
+        }
+
+        function renderPending(items) {
+          if (!items || items.length === 0) {
+            pendingListEl.innerHTML =
+              '<div class="small">No hay solicitudes pendientes.</div>';
+            return;
+          }
+
+          const ul = document.createElement("ul");
+          ul.className = "list";
+          items.forEach((it) => {
+            const li = document.createElement("li");
+            li.className = "item";
+            const left = document.createElement("div");
+            left.innerHTML = `<strong>${escapeHtml(
+              it.FullName ||
+                it.fullName ||
+                it.Employee?.FullName ||
+                it.employee?.fullName ||
+                it["FullName"]
+            )}</strong>
+                        <div class="meta">DNI: ${escapeHtml(
+                          it.DNI ||
+                            it.dni ||
+                            it.Employee?.DNI ||
+                            it.employee?.dni ||
+                            it["DNI"] ||
+                            ""
+                        )} — ${new Date(
+              it.RequestedAt || it.requestedAt
+            ).toLocaleString()}</div>`;
+            const right = document.createElement("div");
+            const btnApprove = document.createElement("button");
+            btnApprove.textContent = "Aprobar";
+            btnApprove.addEventListener("click", () => approve(it.Id || it.id));
+            right.appendChild(btnApprove);
+
+            li.appendChild(left);
+            li.appendChild(right);
+            ul.appendChild(li);
+          });
+
+          pendingListEl.innerHTML = "";
+          pendingListEl.appendChild(ul);
+        }
+
+        async function approve(id) {
+          if (!confirm("Aprobar acceso?")) return;
+          try {
+            const res = await fetch(APPROVE_ENDPOINT(id), { method: "POST" });
+            if (!res.ok) {
+              const t = await res.text();
+              alert("Error al aprobar: " + (t || res.statusText));
+            } else {
+              alert("Acceso aprobado");
+              // recargar al aprobar
+              await loadPending();
+            }
+          } catch (err) {
+            alert("Error de conexión: " + err.message);
+          }
+        }
+
+        btnRefresh.addEventListener("click", loadPending);
+
+        // Polling loop
+        function startPolling() {
+          stopPolling();
+          pollTimer = setInterval(loadPending, pollIntervalSec * 1000);
+          loadPending(); // primera carga inmediata
+        }
+        function stopPolling() {
+          if (pollTimer) clearInterval(pollTimer);
+          pollTimer = null;
+        }
+        startPolling();
+
+        // small helper to avoid XSS in displayed strings
+        function escapeHtml(str) {
+          if (!str && str !== 0) return "";
+          return String(str)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
+
+        // intenta leer hash para seleccionar tab: #recepcion
+        if (location.hash === "#recepcion") showTab("recepcion");
+      })();
+    </script>
+  </body>
+</html>
