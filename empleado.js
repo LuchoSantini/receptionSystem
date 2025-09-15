@@ -10,7 +10,7 @@
   function showMessage(targetEl, text, ok = true) {
     targetEl.innerHTML = `<div class="${ok ? "ok" : "err"}">${text}</div>`;
     setTimeout(() => {
-      if (targetEl.innerHTML) targetEl.innerHTML = "";
+      targetEl.innerHTML = "";
     }, 5000);
   }
 
@@ -28,7 +28,7 @@
       const res = await fetch(REQ_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dni),
+        body: JSON.stringify({ dni }), // <-- CORRECCIÓN
       });
 
       if (!res.ok) {
