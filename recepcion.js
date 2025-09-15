@@ -130,7 +130,7 @@
 
       const data = await res.json();
       console.log("✅ Aprobación exitosa:", data);
-      alert(data?.message || "Acceso aprobado");
+      // alert(data?.message || "Acceso aprobado");
       await loadPending();
     } catch (err) {
       console.error("❌ Error de conexión al aprobar:", err);
