@@ -1,5 +1,5 @@
 (() => {
-  const API_BASE = "http://192.168.0.195:5115";
+  const API_BASE = "https://6c420e388759.ngrok-free.app";
   const REQ_ENDPOINT = API_BASE + "/api/Access";
 
   const dniInput = document.getElementById("dni");
