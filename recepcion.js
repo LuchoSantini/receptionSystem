@@ -6,12 +6,8 @@
 
   const pendingListEl = document.getElementById("pending-list");
   const btnRefresh = document.getElementById("btn-refresh");
-
-  // Sonido de notificación
   const notificationSound = new Audio("sonido.mp3");
-
-  let lastPendingIds = new Set(); // track para detectar nuevas solicitudes
-
+  let lastPendingIds = new Set();
   let pollIntervalSec = 5;
   document.getElementById("poll-interval").textContent = pollIntervalSec + "s";
   let pollTimer = null;
@@ -38,8 +34,7 @@
       return;
     }
 
-    // Detectar nuevas solicitudes
-    const currentIds = new Set(items.map((it) => it.Id || it.id));
+    const currentIds = new Set(items.map((it) => it.id));
     let isNew = false;
     for (let id of currentIds) {
       if (!lastPendingIds.has(id)) {
@@ -54,7 +49,6 @@
     }
     lastPendingIds = currentIds;
 
-    // Renderizar lista
     const ul = document.createElement("ul");
     ul.className = "list";
     items.forEach((it) => {
@@ -62,36 +56,31 @@
       li.className = "item";
 
       const left = document.createElement("div");
-      left.innerHTML = `<strong>${escapeHtml(
-        it.FullName || it.fullName || ""
-      )}</strong>
-        <div class="meta">DNI: ${escapeHtml(
-          it.DNI || it.dni || ""
-        )} — ${new Date(
-        it.RequestedAt || it.requestedAt
+      left.innerHTML = `<strong>${escapeHtml(it.fullName)}</strong>
+        <div class="meta">DNI: ${escapeHtml(it.dni)} — ${new Date(
+        it.requestedAt
       ).toLocaleString()}</div>`;
 
       const right = document.createElement("div");
 
-      // Botón aprobar
       const btnApprove = document.createElement("button");
       btnApprove.textContent = "Aprobar";
-      btnApprove.addEventListener("click", () => approve(it.Id || it.id));
+      btnApprove.addEventListener("click", () => approve(it.id));
       right.appendChild(btnApprove);
 
-      // Botón denegar
       const btnDeny = document.createElement("button");
       btnDeny.textContent = "Denegar";
       btnDeny.style.marginLeft = "6px";
-      btnDeny.style.background = "#b91c1c"; // rojo
+      btnDeny.style.background = "#b91c1c";
       btnDeny.style.color = "white";
-      btnDeny.addEventListener("click", () => deny(it.Id || it.id));
+      btnDeny.addEventListener("click", () => deny(it.id));
       right.appendChild(btnDeny);
 
       li.appendChild(left);
       li.appendChild(right);
       ul.appendChild(li);
     });
+
     pendingListEl.innerHTML = "";
     pendingListEl.appendChild(ul);
   }
@@ -112,7 +101,6 @@
     }
   }
 
-  // Nueva función para denegar
   async function deny(id) {
     if (!confirm("Denegar acceso?")) return;
     try {
