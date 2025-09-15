@@ -71,7 +71,11 @@
   btnRequest.addEventListener("click", async () => {
     const dni = (dniInput.value || "").trim();
     if (!dni) {
-      showMessage(empleadoMsg, "Ingresá tu DNI", false);
+      showMessage(
+        empleadoMsg,
+        "Ingresá los últimos cuatro dígitos de tu DNI",
+        false
+      );
       return;
     }
 

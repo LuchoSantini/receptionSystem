@@ -78,25 +78,32 @@
     <header>
       <div class="wrap">
         <h1>Acceso por QR - Laboratorio Consultar</h1>
-        <p class="small">Introduce tu DNI y presiona "Pedir acceso".</p>
+        <p class="small">
+          Introduce los últimos cuatro dígitos de tu DNI y presiona "Pedir
+          acceso".
+        </p>
       </div>
     </header>
 
     <main class="wrap">
       <section class="card">
-        <label for="dni">DNI</label>
+        <label for="dni">Últimos cuatro dígitos de tu DNI</label>
         <input
           id="dni"
           type="text"
           inputmode="numeric"
           style="width: 320px"
-          placeholder="12345678"
+          placeholder="123"
         />
         <div style="margin-top: 12px; display: flex; gap: 8px">
           <button id="btn-request">Pedir acceso</button>
           <button id="btn-clear" class="secondary">Limpiar</button>
         </div>
+
         <div id="empleado-msg" style="margin-top: 12px"></div>
+        <p class="small" style="text-align: center">
+          Sistema válido solo para integrantes de Laboratorio Consultar.
+        </p>
       </section>
     </main>
 
