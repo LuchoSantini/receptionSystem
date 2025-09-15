@@ -15,12 +15,13 @@
   async function loadPending() {
     try {
       const res = await fetch(PENDING_ENDPOINT);
-      if (!res.ok) {
-        pendingListEl.innerHTML = `<div class="err">Error: ${res.statusText}</div>`;
-        return;
+      const text = await res.text(); // siempre leer como texto primero
+      try {
+        const items = JSON.parse(text);
+        renderPending(items);
+      } catch {
+        pendingListEl.innerHTML = `<div class="err">Respuesta inválida del servidor:<br>${text}</div>`;
       }
-      const items = await res.json();
-      renderPending(items);
     } catch (err) {
       pendingListEl.innerHTML = `<div class="err">Error de conexión: ${err.message}</div>`;
     }
