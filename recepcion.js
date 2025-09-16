@@ -1,5 +1,5 @@
 (() => {
-  const API_BASE = "https://77b0a5bce428.ngrok-free.app";
+  const API_BASE = "https://recepcion-consultar.somee.com";
   const PENDING_ENDPOINT = API_BASE + "/api/Access/pending";
   const APPROVE_ENDPOINT = (id) => API_BASE + "/api/Access/approve/" + id;
   const DENY_ENDPOINT = (id) => API_BASE + "/api/Access/deny/" + id;

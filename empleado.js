@@ -1,5 +1,5 @@
 (() => {
-  const API_BASE = "https://77b0a5bce428.ngrok-free.app";
+  const API_BASE = "https://recepcion-consultar.somee.com";
   const REQ_ENDPOINT = API_BASE + "/api/Access"; // POST para pedir acceso
   const STATUS_ENDPOINT = API_BASE + "/api/Access/status"; // GET para consultar estado
 
