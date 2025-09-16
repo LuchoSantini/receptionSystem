@@ -112,7 +112,7 @@
       showMessage(empleadoMsg, "Error de conexión: " + err.message, false);
     } finally {
       btnRequest.disabled = false;
-      btnRequest.textContent = "Pedir acceso";
+      btnRequest.textContent = "Solicitar acceso";
     }
   });
 
